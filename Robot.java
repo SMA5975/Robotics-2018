@@ -78,7 +78,7 @@ public class Robot extends IterativeRobot {
 			myRobot.drive(0.0, 0.0); 	// stop robot
 		}
     }
-    
+    //hi 
     /**
      * This function is called once each time the robot enters tele-operated mode
      */
