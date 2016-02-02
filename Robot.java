@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5975.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -26,19 +27,25 @@ public class Robot extends IterativeRobot {
 	int eleMotorChannel = 3;
 	
 	//IO pin mapping
-	int distanceSensorPin1=3;
-	int distanceSensorPin2=4;
+	int echoSensorPin=3;
+	int pingSensorPin=4;
+	int upperLimitPin=1;
+	int lowerLimitPin=2;
 	
 	// Driver Station / controller mapping
 	int joyPort=0;
 	int lTrigger = 2;
 	int rTrigger = 3;
 	Joystick stick;
-	int autoLoopCounter;
-	int turnLoopCounter;
+	int leftLoopCounter;
+	int rightLoopCounter;
+	int moveCounter;
 	
 	// Declaring XBox buttons
 	
+	//digital inputs
+	DigitalInput upperLimit;
+	DigitalInput lowerLimit;
 	
 	
     /**
@@ -51,7 +58,10 @@ public class Robot extends IterativeRobot {
     	myRobot =new RobotDrive(leftMotor,rightMotor);
     	eleMotor = new VictorSP(eleMotorChannel);
     	leftMotor.setInverted(false);
-    	distanceSensor = new Ultrasonic(distanceSensorPin1,distanceSensorPin2);
+    	distanceSensor = new Ultrasonic(pingSensorPin,echoSensorPin);
+    	upperLimit = new DigitalInput(upperLimitPin);
+    	lowerLimit = new DigitalInput(lowerLimitPin);
+    	
     	
     	stick = new Joystick(joyPort);
         
@@ -61,8 +71,9 @@ public class Robot extends IterativeRobot {
      * This function is run once each time the robot enters autonomous mode
      */
     public void autonomousInit() {
-    	autoLoopCounter = 0;
-    	turnLoopCounter = 0;
+    	leftLoopCounter = 0;
+    	rightLoopCounter = 0;
+    	moveCounter = 0;
     }
 
     /**
@@ -76,28 +87,37 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
     	//start by turning left
     	
-    	if (turnLoopCounter < 13.37)
+    	while (leftLoopCounter < 13)
     	{
     		myRobot.tankDrive(1.0, -1.0);
-    		turnLoopCounter++;
+    		leftLoopCounter++;
     	}
     	//keep moving until you hit 2 inches from the wall
     	
-    	if(distanceSensor.getRangeInches()>2)
+    	while (distanceSensor.getRangeInches()>2)
     
 		{
-			myRobot.drive(-0.5, -0.25); 	// drive forwards half speed
-			} else {
-			myRobot.drive(0.0, 0.0); 	// stop robot
-			}
+			myRobot.drive(-0.5, 0.0); 	// drive forwards half speed
+		} 
+    	
+		myRobot.drive(0.0, 0.0); 	// stop robot
+			
     	//turn 90 degrees right
-    	if (turnLoopCounter < 13.37)	
+		//you look fabulous today
+    	while (rightLoopCounter < 13)	
     	{
     		myRobot.tankDrive(-1.0, 1.0);
-    		turnLoopCounter++;
+    		rightLoopCounter++;
     	}
+    	
+    	while (moveCounter < 100)
+    	{
+    		myRobot.drive(-0.5, 0.0);
+    	}
+    	myRobot.drive(0.0, 0.0); 	// stop robot
+		
     }
-    //hi 
+    //hi hi
     /**
      * This function is called once each time the robot enters tele-operated mode
      */
@@ -116,25 +136,18 @@ public class Robot extends IterativeRobot {
        
     }
      public void moveElevator() {
-    	 boolean limitUpper= false;
-    	 boolean limitLower= false;
-    	 /*
-    	  * read the limit switches and set the values
-    	  * 
-    	  * 
-    	  */
-    	 
-    	 
+    	
     	 // read axis value
+ 
     	 double myLAxis =  stick.getRawAxis(lTrigger);
     	 double myRAxis =  stick.getRawAxis(rTrigger);
     	 double myAxis = myLAxis + myRAxis;
-    	 if(myAxis > 0 && limitUpper == false)
+    	 if(myAxis > 0 && upperLimit.get() == false)
     	 {
     		 eleMotor.set(myAxis);
     		 
     	 }
-    	 if(myAxis < 0 && limitLower == false)
+    	 if(myAxis < 0 && lowerLimit.get() == false)
     	 {
     	 // move motor
     	 eleMotor.set(myAxis);
@@ -148,5 +161,6 @@ public class Robot extends IterativeRobot {
     public void testPeriodic() {
     	LiveWindow.run();
     }
-    
+    //hello
+    //it's me
 }
