@@ -3,6 +3,7 @@ package org.usfirst.frc.team5975.robot;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
@@ -18,11 +19,15 @@ public class Robot extends IterativeRobot {
 	VictorSP leftMotor ;
 	VictorSP rightMotor ;
 	VictorSP eleMotor;
-	
+	Ultrasonic distanceSensor;
 	// RoboRio mapping
 	int leftMotorChannel=1;
 	int rightMotorChannel=2;
 	int eleMotorChannel = 3;
+	
+	//IO pin mapping
+	int distanceSensorPin1=3;
+	int distanceSensorPin2=4;
 	
 	// Driver Station / controller mapping
 	int joyPort=0;
@@ -35,6 +40,7 @@ public class Robot extends IterativeRobot {
 	// Declaring XBox buttons
 	
 	
+	
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -45,7 +51,7 @@ public class Robot extends IterativeRobot {
     	myRobot =new RobotDrive(leftMotor,rightMotor);
     	eleMotor = new VictorSP(eleMotorChannel);
     	leftMotor.setInverted(false);
-
+    	distanceSensor = new Ultrasonic(distanceSensorPin1,distanceSensorPin2);
     	
     	stick = new Joystick(joyPort);
         
@@ -61,7 +67,12 @@ public class Robot extends IterativeRobot {
 
     /**
      * This function is called periodically during autonomous
+     * turn 90 degrees left
+     * go forward until wall 2 inches away
+     * turn 90 degrees right
+     * go forward through low bar 12 inches
      */
+    
     public void autonomousPeriodic() {
     	//start by turning left
     	
@@ -70,13 +81,21 @@ public class Robot extends IterativeRobot {
     		myRobot.tankDrive(1.0, -1.0);
     		turnLoopCounter++;
     	}
-    	if(autoLoopCounter < 100) //Check if we've completed 100 loops (approximately 2 seconds)
+    	//keep moving until you hit 2 inches from the wall
+    	
+    	if(distanceSensor.getRangeInches()>2)
+    
 		{
 			myRobot.drive(-0.5, -0.25); 	// drive forwards half speed
-			autoLoopCounter++;
 			} else {
 			myRobot.drive(0.0, 0.0); 	// stop robot
-		}
+			}
+    	//turn 90 degrees right
+    	if (turnLoopCounter < 13.37)	
+    	{
+    		myRobot.tankDrive(-1.0, 1.0);
+    		turnLoopCounter++;
+    	}
     }
     //hi 
     /**
