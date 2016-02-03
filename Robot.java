@@ -37,6 +37,11 @@ public class Robot extends IterativeRobot {
 	int lTrigger = 2;
 	int rTrigger = 3;
 	Joystick stick;
+	
+	// maximum values adjustments need to be made
+	double inchesFromWall = 8.0;
+	int turnValue= 13;
+	
 	int leftLoopCounter;
 	int rightLoopCounter;
 	int moveCounter;
@@ -87,14 +92,14 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
     	//start by turning left
     	
-    	while (leftLoopCounter < 13)
+    	while (leftLoopCounter < turnValue)
     	{
     		myRobot.tankDrive(1.0, -1.0);
     		leftLoopCounter++;
     	}
     	//keep moving until you hit 2 inches from the wall
     	
-    	while (distanceSensor.getRangeInches()>2)
+    	while (distanceSensor.getRangeInches()>inchesFromWall)
     
 		{
 			myRobot.drive(-0.5, 0.0); 	// drive forwards half speed
@@ -104,7 +109,7 @@ public class Robot extends IterativeRobot {
 			
     	//turn 90 degrees right
 		//you look fabulous today
-    	while (rightLoopCounter < 13)	
+    	while (rightLoopCounter < turnValue)	
     	{
     		myRobot.tankDrive(-1.0, 1.0);
     		rightLoopCounter++;
