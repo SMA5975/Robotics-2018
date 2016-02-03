@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -69,7 +70,9 @@ public class Robot extends IterativeRobot {
     	
     	
     	stick = new Joystick(joyPort);
-        
+        //test mode
+    	LiveWindow.addSensor("driveSystem", "distanceSensor", distanceSensor);
+    	SmartDashboard.putNumber("DistanceSensor", distanceSensor.getRangeInches());
     }
     
     /**
