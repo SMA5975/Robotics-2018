@@ -41,7 +41,7 @@ public class Robot extends IterativeRobot {
 	
 	// maximum values adjustments need to be made
 	double inchesFromWall = 8.0;
-	int turnValue= 200;
+	int turnValue= 213;
 	
 	int leftLoopCounter;
 	int rightLoopCounter;
@@ -95,35 +95,47 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
     	//start by turning left
     	
+    	 
     	while (leftLoopCounter < turnValue)
-    	{
+    	{	
+    		autoLowerLift();
     		myRobot.arcadeDrive(0.0, -1.0);
-    		leftLoopCounter++;
+    		leftLoopCounter++;		
     	}
+    	
     	//keep moving until you hit 2 inches from the wall
-    	
-    	while (distanceSensor.getRangeInches()>inchesFromWall)
-     
-		{
-			myRobot.arcadeDrive(0.5, 0.0); 	// drive forwards half speed
-		} 
-    	
-		myRobot.drive(0.0, 0.0); 	// stop robot
-			
+    
+    	/*while (distanceSensor.getRangeInches()>inchesFromWall)
+    	{
+    		autoLowerLift();
+    		myRobot.arcadeDrive(0.5, 0.0); 	// drive forwards half speed
+    	}	 
+    	myRobot.drive(0.0, 0.0); // stop robot */	
+    		 
     	//turn 90 degrees right
 		//you look fabulous today
+    	 
     	while (rightLoopCounter < turnValue)	
     	{
+    		autoLowerLift();
     		myRobot.arcadeDrive(0.0, 1.0);
     		rightLoopCounter++;
     	}
     	
+    	 
     	while (moveCounter < 100)
-    	{
+    	{ 
+    		autoLowerLift();
     		myRobot.drive(0.5, 0.0);
     	}
     	myRobot.drive(0.0, 0.0); 	// stop robot
-		
+    	
+    }
+    //during while loops if lift is not all the way down autoLowerLift lowers it
+    private void autoLowerLift() {
+    	/*if (lowerLimit.get() == false) {
+    		liftMotor.set(0.1);
+    	}	*/
     }
     //Hi hi
     /**
@@ -171,7 +183,7 @@ public class Robot extends IterativeRobot {
     	 myAxis = limitAxis (myAxis);
 //    	 if(myAxis > 0 && lowerLimit.get() == false)
 //    	 {
-//    		 eleMotor.set(myAxis);
+//    		 liftMotor.set(myAxis);
 //    		 //if less than zero, going up
 //    		 //greater than zero, going down
 //    	 }
@@ -201,4 +213,14 @@ public class Robot extends IterativeRobot {
     //I'm in California dreaming 'bout who we used to be
     //when we were younger and free
     //I've forgotten how it felt before the world fell at our feet
+    //There's such a difference between us
+    //And a million miles
+    //Hello from the other side
+    //I must have called a thousand times
+    //to tell you im sorry for everything that ive done
+    //but when i call you never seem to be home
+    //Hello from the outside
+    //at least i can say that ive tried
+    //to tell you im sorry for breaking your heart
+    //
 }
