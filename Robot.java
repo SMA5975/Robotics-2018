@@ -20,12 +20,12 @@ public class Robot extends IterativeRobot {
 	RobotDrive myRobot;
 	VictorSP leftMotor ;
 	VictorSP rightMotor ;
-	VictorSP eleMotor;
+	VictorSP liftMotor;
 	Ultrasonic distanceSensor;
 	// RoboRio mapping
 	int leftMotorChannel=1;
 	int rightMotorChannel=2;
-	int eleMotorChannel = 3;
+	int liftMotorChannel = 4;
 	
 	//IO pin mapping
 	int echoSensorPin=3;
@@ -41,7 +41,7 @@ public class Robot extends IterativeRobot {
 	
 	// maximum values adjustments need to be made
 	double inchesFromWall = 8.0;
-	int turnValue= 13;
+	int turnValue= 200;
 	
 	int leftLoopCounter;
 	int rightLoopCounter;
@@ -62,7 +62,7 @@ public class Robot extends IterativeRobot {
     	leftMotor=new VictorSP(leftMotorChannel);
     	rightMotor=new VictorSP(rightMotorChannel);
     	myRobot =new RobotDrive(leftMotor,rightMotor);
-    	eleMotor = new VictorSP(eleMotorChannel);
+    	liftMotor = new VictorSP(liftMotorChannel);
     	leftMotor.setInverted(false);
     	distanceSensor = new Ultrasonic(pingSensorPin,echoSensorPin);
     	upperLimit = new DigitalInput(upperLimitPin);
@@ -97,15 +97,15 @@ public class Robot extends IterativeRobot {
     	
     	while (leftLoopCounter < turnValue)
     	{
-    		myRobot.tankDrive(1.0, -1.0);
+    		myRobot.arcadeDrive(0.0, -1.0);
     		leftLoopCounter++;
     	}
     	//keep moving until you hit 2 inches from the wall
     	
     	while (distanceSensor.getRangeInches()>inchesFromWall)
-    
+     
 		{
-			myRobot.drive(-0.5, 0.0); 	// drive forwards half speed
+			myRobot.arcadeDrive(0.5, 0.0); 	// drive forwards half speed
 		} 
     	
 		myRobot.drive(0.0, 0.0); 	// stop robot
@@ -114,18 +114,18 @@ public class Robot extends IterativeRobot {
 		//you look fabulous today
     	while (rightLoopCounter < turnValue)	
     	{
-    		myRobot.tankDrive(-1.0, 1.0);
+    		myRobot.arcadeDrive(0.0, 1.0);
     		rightLoopCounter++;
     	}
     	
     	while (moveCounter < 100)
     	{
-    		myRobot.drive(-0.5, 0.0);
+    		myRobot.drive(0.5, 0.0);
     	}
     	myRobot.drive(0.0, 0.0); 	// stop robot
 		
     }
-    //hi hi
+    //Hi hi
     /**
      * This function is called once each time the robot enters tele-operated mode
      */
@@ -138,29 +138,50 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
     	// went left instead of right
     	double xAxis = stick.getX ();
+    	xAxis = limitAxis(xAxis);
     	xAxis = -xAxis;
-    	myRobot.arcadeDrive(stick.getY(), xAxis, false);
-        moveElevator();
+    	xAxis=Math.pow(xAxis, 3.0);
+    	
+    	double yAxis = stick.getY ();
+    	yAxis = limitAxis(yAxis);
+    	yAxis = -yAxis;
+    	yAxis=Math.pow(yAxis, 3.0);
+    	myRobot.arcadeDrive(yAxis,  xAxis, true);
+        moveLift();
+        
        
     }
-     public void moveElevator() {
+   //limits joystick axis to range -1.0 to 1.0
+    private double limitAxis (double axis) {
+    	if (axis > 1.0)
+    	    axis = 1.0;
+    	else if (axis < -1.0)
+    		axis = -1.0;
+    	return axis;
+    	
+    	
+    }
+     public void moveLift() {
     	
     	 // read axis value
  
     	 double myLAxis =  stick.getRawAxis(lTrigger);
-    	 double myRAxis =  stick.getRawAxis(rTrigger);
+    	 double myRAxis =  -stick.getRawAxis(rTrigger);
     	 double myAxis = myLAxis + myRAxis;
-    	 if(myAxis > 0 && upperLimit.get() == false)
-    	 {
-    		 eleMotor.set(myAxis);
-    		 
-    	 }
-    	 if(myAxis < 0 && lowerLimit.get() == false)
-    	 {
-    	 // move motor
-    	 eleMotor.set(myAxis);
-    	 }
-    
+    	 myAxis = limitAxis (myAxis);
+//    	 if(myAxis > 0 && lowerLimit.get() == false)
+//    	 {
+//    		 eleMotor.set(myAxis);
+//    		 //if less than zero, going up
+//    		 //greater than zero, going down
+//    	 }
+//    	 else if(myAxis < 0 && upperLimit.get() == false)
+//    	 {
+//    	 // move motor
+//    	 eleMotor.set(myAxis);
+//    	 }
+    	 liftMotor.set (myAxis);
+   
      }
      
     /**
@@ -171,4 +192,13 @@ public class Robot extends IterativeRobot {
     }
     //hello
     //it's me
+    //i was wondering if after all these years you'd like to meet
+    //to go over everything
+    //they say that times supposed to heal yeah
+    //but i ain't done much healing
+    //hello?
+    //can you hear me?
+    //I'm in California dreaming 'bout who we used to be
+    //when we were younger and free
+    //I've forgotten how it felt before the world fell at our feet
 }
