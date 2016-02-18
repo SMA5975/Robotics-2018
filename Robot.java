@@ -35,10 +35,14 @@ public class Robot extends IterativeRobot {
 	
 	// Driver Station / controller mapping
 	int joyPort=0;
-	int lTrigger = 2;
-	int rTrigger = 3;
-	Joystick stick;
+	int lTriggerID = 2;
+	int rTriggerID = 3;
+	int leftStickID = 1;
+	int rightStickID = 5;
+	Joystick xboxController;
 	
+	//verify that stick1 and stick2 correspond to the left and right joysticks on the controller
+	 
 	// maximum values adjustments need to be made
 	double inchesFromWall = 8.0;
 	int turnValue= 213;
@@ -52,11 +56,21 @@ public class Robot extends IterativeRobot {
 	//digital inputs
 	DigitalInput upperLimit;
 	DigitalInput lowerLimit;
-	
-	
+	boolean upperBtnState = false;
+	boolean lowerBtnState = false;
+	boolean lastUpperBtnState = false;
+	boolean lastLowerBtnState = false;
+	long lastUpperDebounceTime = 0;
+	long lastLowerDebounceTime = 0;
+	long debounceDelay = 50;
+
+	boolean upperFlag = false;
+	boolean lowerFlag = false;
+	int autoStage = 0;
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
+     * 
      */
     public void robotInit() {
     	leftMotor=new VictorSP(leftMotorChannel);
@@ -68,11 +82,13 @@ public class Robot extends IterativeRobot {
     	upperLimit = new DigitalInput(upperLimitPin);
     	lowerLimit = new DigitalInput(lowerLimitPin);
     	
+    	xboxController  = new Joystick(joyPort);
     	
-    	stick = new Joystick(joyPort);
         //test mode
     	LiveWindow.addSensor("driveSystem", "distanceSensor", distanceSensor);
     	SmartDashboard.putNumber("DistanceSensor", distanceSensor.getRangeInches());
+    	SmartDashboard.putBoolean("Upper Limit", upperBtnState);
+    	SmartDashboard.putBoolean("Lower Limit", lowerBtnState);
     }
     
     /**
@@ -84,6 +100,8 @@ public class Robot extends IterativeRobot {
     	moveCounter = 0;
     }
 
+    //you're the {CSS} to my <HTML> <3
+    
     /**
      * This function is called periodically during autonomous
      * turn 90 degrees left
@@ -92,7 +110,7 @@ public class Robot extends IterativeRobot {
      * go forward through low bar 12 inches
      */
     
-    public void autonomousPeriodic() {
+    public void autonomousPeriodic2() {
     	//start by turning left
     	
     	 
@@ -102,6 +120,7 @@ public class Robot extends IterativeRobot {
     		myRobot.arcadeDrive(0.0, -1.0);
     		leftLoopCounter++;		
     	}
+    	// TBD ADD DELAY
     	
     	//keep moving until you hit 2 inches from the wall
     
@@ -131,9 +150,62 @@ public class Robot extends IterativeRobot {
     	myRobot.drive(0.0, 0.0); 	// stop robot
     	
     }
-    //during while loops if lift is not all the way down autoLowerLift lowers it
-    private void autoLowerLift() {
-    	/*if (lowerLimit.get() == false) {
+    //you're the {CSS} to my <HTML> 
+	
+	/**
+	 * This function is called periodically during autonomous
+	 * turn 90 degrees left
+	 * go forward until wall 2 inches away
+	 * turn 90 degrees right
+	 * go forward through low bar 12 inches
+	 */
+	
+	public void autonomousPeriodic() {
+		if (autoStage == 0){
+			//start by turning left
+			if (leftLoopCounter < turnValue)
+			{	
+				autoLowerLift();
+				myRobot.arcadeDrive(0.0, -1.0);
+				leftLoopCounter++;		
+			} else {
+				autoStage = 1;
+			}
+		} else if (autoStage == 1) {
+			//turn 90 degrees right
+			//you look fabulous today
+			 
+			if (rightLoopCounter < turnValue)	
+			{
+				autoLowerLift();
+				myRobot.arcadeDrive(0.0, 1.0);
+				rightLoopCounter++;
+			} else {
+				autoStage = 2;
+			}
+		} else if (autoStage == 2) {
+			if (moveCounter < 100)
+			{ 
+				autoLowerLift();
+				myRobot.drive(0.5, 0.0);
+				moveCounter++;
+			}
+			myRobot.drive(0.0, 0.0); 	// stop robot
+		}
+		
+		//keep moving until you hit 2 inches from the wall
+	
+		/*while (distanceSensor.getRangeInches()>inchesFromWall)
+		{
+			autoLowerLift();
+			myRobot.arcadeDrive(0.5, 0.0); 	// drive forwards half speed
+		}	 
+		myRobot.drive(0.0, 0.0); // stop robot */	
+	}
+
+	//during while loops if lift is not all the way down autoLowerLift lowers it
+    private void autoLowerLift()  {
+    	/*if (lowerLimit.get() {
     		liftMotor.set(0.1);
     	}	*/
     }
@@ -147,20 +219,33 @@ public class Robot extends IterativeRobot {
     /**
      * This function is called periodically during operator control
      */
+    
     public void teleopPeriodic() {
     	// went left instead of right
-    	double xAxis = stick.getX ();
-    	xAxis = limitAxis(xAxis);
-    	xAxis = -xAxis;
-    	xAxis=Math.pow(xAxis, 3.0);
+    	//double myLAxis =  xboxController.getRawAxis(lTriggerID);
     	
-    	double yAxis = stick.getY ();
-    	yAxis = limitAxis(yAxis);
-    	yAxis = -yAxis;
-    	yAxis=Math.pow(yAxis, 3.0);
-    	myRobot.arcadeDrive(yAxis,  xAxis, true);
-        moveLift();
-        
+    	double leftAxis = -xboxController.getRawAxis(leftStickID);
+    	double rightAxis = -xboxController.getRawAxis(rightStickID);
+    
+    	leftAxis = limitAxis(leftAxis);
+    	rightAxis = limitAxis(rightAxis);
+    	
+//    	leftAxis = Math.abs(leftAxis) * leftAxis;
+//    	rightAxis = Math.abs(rightAxis) * rightAxis;
+    	
+    	leftAxis = leftAxis * leftAxis * leftAxis;
+    	rightAxis = rightAxis * rightAxis * rightAxis;
+    	
+    	
+    	// instead of cube try quadratic scaling (joystick value * absolute value of joystick value)
+    	
+ 
+    	myRobot.tankDrive(leftAxis, rightAxis);//myRobot.tankDrive(Axis 1, Axis 2)-you need to define the two axes, I'm not sure what the button mappings for the axes are on your controller
+    	
+    	double liftAxis = getLiftAxis();
+    	moveLift(liftAxis);
+
+    	//Timer.delay(.002);// figure exactly how the timer.delay function works for an iterative robot-On a simple robot this function prevents the robot from doing anything for the given time interval, make sure this won't happen on your robot
        
     }
    //limits joystick axis to range -1.0 to 1.0
@@ -173,29 +258,101 @@ public class Robot extends IterativeRobot {
     	
     	
     }
-     public void moveLift() {
-    	
-    	 // read axis value
- 
-    	 double myLAxis =  stick.getRawAxis(lTrigger);
-    	 double myRAxis =  -stick.getRawAxis(rTrigger);
-    	 double myAxis = myLAxis + myRAxis;
-    	 myAxis = limitAxis (myAxis);
-//    	 if(myAxis > 0 && lowerLimit.get() == false)
+//     public void moveLift() {
+//    	
+//    	 // read axis value
+//    	 boolean upperLimitFlag = upperLimit.get() ;
+//    	 boolean lowerLimitFlag = lowerLimit.get() ;
+//    	 
+//    	 
+//    	 double myLAxis =  stick.getRawAxis(lTrigger);
+//    	 double myRAxis =  -stick.getRawAxis(rTrigger);
+//    	 double myAxis = myLAxis + myRAxis;
+//    	 myAxis = limitAxis (myAxis);
+//    	 if(myAxis > 0 && lowerLimit.get() == true )
 //    	 {
-//    		 liftMotor.set(myAxis);
-//    		 //if less than zero, going up
-//    		 //greater than zero, going down
+// 		 liftMotor.set(myAxis);
+//  		 //if less than zero, going up
+//   		 //greater than zero, going down
+// 		 }
+//    		 else if(myAxis < 0 && upperLimit.get() == true )
+//    		 {
+//   	 // move motor
+//   	 liftMotor.set(myAxis);
 //    	 }
-//    	 else if(myAxis < 0 && upperLimit.get() == false)
-//    	 {
-//    	 // move motor
-//    	 eleMotor.set(myAxis);
-//    	 }
-    	 liftMotor.set (myAxis);
-   
-     }
+//    	// liftMotor.set (myAxis);
+//   
+//     }
      
+     public void moveLift(double liftAxis)
+     {
+     	 final int stopMotor = 0;
+     	 
+     	 // Read the limit switches before moving the lift!
+     	 //readSwitch(upperLimit, upperBtnState, lastUpperBtnState, lastUpperDebounceTime);
+     	  //readSwitch(lowerLimit, lowerBtnState, lastLowerBtnState, lastLowerDebounceTime);
+     	 
+     	 upperBtnState = upperLimit.get();
+     	 lowerBtnState = lowerLimit.get();
+     	 
+     	 if(liftAxis < 0 && upperBtnState == false)
+     	 {
+     		 liftMotor.set(stopMotor);
+     		 lowerFlag = true;
+     	 }
+     	 else if(liftAxis > 0 && lowerBtnState == false)
+     	 {
+     		 liftMotor.set(stopMotor);
+     		 upperFlag = true;
+     	 }
+     	 else if (lowerBtnState == false && upperBtnState == false)
+     	 {
+     		 // Both limit switches can't be on at the same time!
+     		 // Since this should never happen, stop the motor!
+     		 liftMotor.set(stopMotor);
+     	 }
+     	 else
+     	 {
+     		 liftMotor.set(liftAxis);
+     		 
+     		 if (lowerFlag == true && liftAxis > 0) {
+     			 lowerFlag = false;
+     		 } else if (upperFlag == true && liftAxis < 0){
+     			 upperFlag = false;
+     		 }
+     	 }
+     }
+
+     public double getLiftAxis()
+     {
+    	 // read trigger buttons and create the axis value
+     	 
+    	 double myLAxis =  xboxController.getRawAxis(lTriggerID); // reverse one axis to act as a "down" button
+    	 double myRAxis =  -xboxController.getRawAxis(rTriggerID);
+    	 return limitAxis( myLAxis + myRAxis);
+
+     }
+
+     @SuppressWarnings("unused")
+	private void readSwitch(DigitalInput mySwitch, boolean switchState, boolean lastState, long lastDebounceTime)
+     {
+    	 boolean switchReading = mySwitch.get();
+    	 
+    	 // check the switch has changed since the last
+    	 // state. If so, reset the debouncing timer
+    	 if ( switchReading != lastState )
+    	 {
+    		 lastDebounceTime = System.currentTimeMillis();
+    	 }
+    	 if ( (System.currentTimeMillis() - lastDebounceTime) > debounceDelay)
+    	 {
+    		 switchState = switchReading;
+    	 }
+    	 
+    	 // Save the reading before exiting the function. Next 
+    	 // time it will be the last (previous) state
+    	 lastState = switchReading;
+     }
     /**
      * This function is called periodically during test mode
      */
@@ -217,10 +374,17 @@ public class Robot extends IterativeRobot {
     //And a million miles
     //Hello from the other side
     //I must have called a thousand times
-    //to tell you im sorry for everything that ive done
+    //to tell you I'm sorry for everything that ive done
     //but when i call you never seem to be home
     //Hello from the outside
-    //at least i can say that ive tried
-    //to tell you im sorry for breaking your heart
-    //
+    //at least i can say that I've tried
+    //to tell you i'm sorry for breaking your heart
+    //but it don't matter
+    //it clearlyyyyyy
+    //doesn't tear you apart
+    //anymorreeeeeeeeeeeee
+    
+   
+  
+    
 }
