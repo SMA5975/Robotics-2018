@@ -34,12 +34,15 @@ public class Robot extends IterativeRobot {
 	int lowerLimitPin=2;
 	
 	// Driver Station / controller mapping
-	int joyPort=0;
+	int joyPort1=0; //driver xbox controller
+	int joyPort2=1; //lift xbox controller
+	
 	int lTriggerID = 2;
 	int rTriggerID = 3;
 	int leftStickID = 1;
 	int rightStickID = 5;
 	Joystick xboxController;
+	Joystick xboxControllerLift;
 	
 	//verify that stick1 and stick2 correspond to the left and right joysticks on the controller
 	 
@@ -82,7 +85,8 @@ public class Robot extends IterativeRobot {
     	upperLimit = new DigitalInput(upperLimitPin);
     	lowerLimit = new DigitalInput(lowerLimitPin);
     	
-    	xboxController  = new Joystick(joyPort);
+    	xboxController  = new Joystick(joyPort1);
+    	xboxControllerLift = new Joystick(joyPort2);
     	
         //test mode
     	LiveWindow.addSensor("driveSystem", "distanceSensor", distanceSensor);
@@ -327,8 +331,8 @@ public class Robot extends IterativeRobot {
      {
     	 // read trigger buttons and create the axis value
      	 
-    	 double myLAxis =  xboxController.getRawAxis(lTriggerID); // reverse one axis to act as a "down" button
-    	 double myRAxis =  -xboxController.getRawAxis(rTriggerID);
+    	 double myLAxis =  xboxControllerLift.getRawAxis(lTriggerID); // reverse one axis to act as a "down" button
+    	 double myRAxis =  -xboxControllerLift.getRawAxis(rTriggerID);
     	 return limitAxis( myLAxis + myRAxis);
 
      }
