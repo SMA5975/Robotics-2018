@@ -41,8 +41,8 @@ public class Robot extends IterativeRobot {
 	int rTriggerID = 3;
 	int leftStickID = 1;
 	int rightStickID = 5;
-	Joystick xboxController;
-	Joystick xboxControllerLift;
+	Joystick youDriveMeCrazzy;
+	Joystick youManipulateMyHeart;
 	
 	//verify that stick1 and stick2 correspond to the left and right joysticks on the controller
 	 
@@ -85,8 +85,8 @@ public class Robot extends IterativeRobot {
     	upperLimit = new DigitalInput(upperLimitPin);
     	lowerLimit = new DigitalInput(lowerLimitPin);
     	
-    	xboxController  = new Joystick(joyPort1);
-    	xboxControllerLift = new Joystick(joyPort2);
+    	youDriveMeCrazzy  = new Joystick(joyPort1);
+    	youManipulateMyHeart = new Joystick(joyPort2);
     	
         //test mode
     	LiveWindow.addSensor("driveSystem", "distanceSensor", distanceSensor);
@@ -228,8 +228,8 @@ public class Robot extends IterativeRobot {
     	// went left instead of right
     	//double myLAxis =  xboxController.getRawAxis(lTriggerID);
     	
-    	double leftAxis = -xboxController.getRawAxis(leftStickID);
-    	double rightAxis = -xboxController.getRawAxis(rightStickID);
+    	double leftAxis = -youDriveMeCrazzy.getRawAxis(leftStickID);
+    	double rightAxis = -youDriveMeCrazzy.getRawAxis(rightStickID);
     
     	leftAxis = limitAxis(leftAxis);
     	rightAxis = limitAxis(rightAxis);
@@ -254,10 +254,16 @@ public class Robot extends IterativeRobot {
     }
    //limits joystick axis to range -1.0 to 1.0
     private double limitAxis (double axis) {
+    	
+    	//clean up joystick reading
     	if (axis > 1.0)
     	    axis = 1.0;
     	else if (axis < -1.0)
     		axis = -1.0;
+    	// if not turbo mode slow down robot to 50% 
+    	
+    	
+    	
     	return axis;
     	
     	
@@ -331,8 +337,8 @@ public class Robot extends IterativeRobot {
      {
     	 // read trigger buttons and create the axis value
      	 
-    	 double myLAxis =  xboxControllerLift.getRawAxis(lTriggerID); // reverse one axis to act as a "down" button
-    	 double myRAxis =  -xboxControllerLift.getRawAxis(rTriggerID);
+    	 double myLAxis =  youManipulateMyHeart.getRawAxis(lTriggerID); // reverse one axis to act as a "down" button
+    	 double myRAxis =  -youManipulateMyHeart.getRawAxis(rTriggerID);
     	 return limitAxis( myLAxis + myRAxis);
 
      }
