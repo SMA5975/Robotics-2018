@@ -1,6 +1,7 @@
 package org.usfirst.frc.team5975.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -61,12 +62,9 @@ public class Robot extends IterativeRobot {
 	DigitalInput lowerLimit;
 	boolean upperBtnState = false;
 	boolean lowerBtnState = false;
-	boolean lastUpperBtnState = false;
-	boolean lastLowerBtnState = false;
-	long lastUpperDebounceTime = 0;
-	long lastLowerDebounceTime = 0;
 	long debounceDelay = 50;
-
+	double speedLimitFactor = 0.5;
+	
 	boolean upperFlag = false;
 	boolean lowerFlag = false;
 	int autoStage = 0;
@@ -213,7 +211,7 @@ public class Robot extends IterativeRobot {
     		liftMotor.set(0.1);
     	}	*/
     }
-    //Hi hi
+    //Hi hi hi
     /**
      * This function is called once each time the robot enters tele-operated mode
      */
@@ -234,12 +232,8 @@ public class Robot extends IterativeRobot {
     	leftAxis = limitAxis(leftAxis);
     	rightAxis = limitAxis(rightAxis);
     	
-//    	leftAxis = Math.abs(leftAxis) * leftAxis;
-//    	rightAxis = Math.abs(rightAxis) * rightAxis;
-    	
-    	leftAxis = leftAxis * leftAxis * leftAxis;
-    	rightAxis = rightAxis * rightAxis * rightAxis;
-    	
+    	leftAxis = limitSpeed(leftAxis);
+    	rightAxis = limitSpeed(rightAxis);
     	
     	// instead of cube try quadratic scaling (joystick value * absolute value of joystick value)
     	
@@ -262,11 +256,21 @@ public class Robot extends IterativeRobot {
     		axis = -1.0;
     	// if not turbo mode slow down robot to 50% 
     	
+    	return axis;
+    		
+    }
+    
+    private double limitSpeed (double axis){
     	
+    	axis = axis * axis * axis;
+    	
+    	if(youDriveMeCrazzy.getBumper(Hand.kRight) == false){
+    		axis = axis * speedLimitFactor;
+    	} else {
+    		System.out.println("Turbo mode!!");
+    	}
     	
     	return axis;
-    	
-    	
     }
 //     public void moveLift() {
 //    	
@@ -393,6 +397,7 @@ public class Robot extends IterativeRobot {
     //it clearlyyyyyy
     //doesn't tear you apart
     //anymorreeeeeeeeeeeee
+    //hi
     
    
   
