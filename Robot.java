@@ -42,6 +42,7 @@ public class Robot extends IterativeRobot {
 	int rTriggerID = 3;
 	int leftStickID = 1;
 	int rightStickID = 5;
+	int turboButtonID = 6;
 	Joystick youDriveMeCrazzy;
 	Joystick youManipulateMyHeart;
 	
@@ -264,7 +265,7 @@ public class Robot extends IterativeRobot {
     	
     	axis = axis * axis * axis;
     	
-    	if(youDriveMeCrazzy.getBumper(Hand.kRight) == false){
+    	if(youDriveMeCrazzy.getRawButton(turboButtonID) == false){
     		axis = axis * speedLimitFactor;
     	} else {
     		System.out.println("Turbo mode!!");
@@ -313,11 +314,13 @@ public class Robot extends IterativeRobot {
      	 {
      		 liftMotor.set(stopMotor);
      		 lowerFlag = true;
+     		 System.out.println("Hit lower limit");
      	 }
      	 else if(liftAxis > 0 && lowerBtnState == false)
      	 {
      		 liftMotor.set(stopMotor);
      		 upperFlag = true;
+     		 System.out.println("Hit upper limit");
      	 }
      	 else if (lowerBtnState == false && upperBtnState == false)
      	 {
