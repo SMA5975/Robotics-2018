@@ -64,7 +64,7 @@ public class Robot extends IterativeRobot {
 	boolean upperBtnState = false;
 	boolean lowerBtnState = false;
 	long debounceDelay = 50;
-	double speedLimitFactor = 0.5;
+	double speedLimitFactor = 0.8;
 	
 	boolean upperFlag = false;
 	boolean lowerFlag = false;
@@ -98,8 +98,6 @@ public class Robot extends IterativeRobot {
      * This function is run once each time the robot enters autonomous mode
      */
     public void autonomousInit() {
-    	leftLoopCounter = 0;
-    	rightLoopCounter = 0;
     	moveCounter = 0;
     }
 
@@ -107,112 +105,24 @@ public class Robot extends IterativeRobot {
     
     /**
      * This function is called periodically during autonomous
-     * turn 90 degrees left
-     * go forward until wall 2 inches away
-     * turn 90 degrees right
      * go forward through low bar 12 inches
      */
     
-    public void autonomousPeriodic2() {
-    	//start by turning left
-    	
-    	 
-    	while (leftLoopCounter < turnValue)
-    	{	
-    		autoLowerLift();
-    		myRobot.arcadeDrive(0.0, -1.0);
-    		leftLoopCounter++;		
-    	}
-    	// TBD ADD DELAY
-    	
-    	//keep moving until you hit 2 inches from the wall
-    
-    	/*while (distanceSensor.getRangeInches()>inchesFromWall)
-    	{
-    		autoLowerLift();
-    		myRobot.arcadeDrive(0.5, 0.0); 	// drive forwards half speed
-    	}	 
-    	myRobot.drive(0.0, 0.0); // stop robot */	
-    		 
-    	//turn 90 degrees right
-		//you look fabulous today
-    	 
-    	while (rightLoopCounter < turnValue)	
-    	{
-    		autoLowerLift();
-    		myRobot.arcadeDrive(0.0, 1.0);
-    		rightLoopCounter++;
-    	}
-    	
-    	 
-    	while (moveCounter < 100)
-    	{ 
-    		autoLowerLift();
-    		myRobot.drive(0.5, 0.0);
-    	}
-    	myRobot.drive(0.0, 0.0); 	// stop robot
-    	
-    }
-    //you're the {CSS} to my <HTML> 
-	
-	/**
-	 * This function is called periodically during autonomous
-	 * turn 90 degrees left
-	 * go forward until wall 2 inches away
-	 * turn 90 degrees right
-	 * go forward through low bar 12 inches
-	 */
 	
 	public void autonomousPeriodic() {
-		if (autoStage == 0){
-			//start by turning left
-			if (leftLoopCounter < turnValue)
-			{	
-				autoLowerLift();
-				myRobot.arcadeDrive(0.0, -1.0);
-				leftLoopCounter++;		
-			} else {
-				autoStage = 1;
-			}
-		} else if (autoStage == 1) {
-			//turn 90 degrees right
-			//you look fabulous today
-			 
-			if (rightLoopCounter < turnValue)	
-			{
-				autoLowerLift();
-				myRobot.arcadeDrive(0.0, 1.0);
-				rightLoopCounter++;
-			} else {
-				autoStage = 2;
-			}
-		} else if (autoStage == 2) {
+			moveLift(0.25);
 			if (moveCounter < 100)
-			{ 
-				autoLowerLift();
+			{
 				myRobot.drive(0.5, 0.0);
 				moveCounter++;
 			}
-			myRobot.drive(0.0, 0.0); 	// stop robot
+			else {
+				myRobot.drive(0.0, 0.0); 	// stop robot
 		}
-		
-		//keep moving until you hit 2 inches from the wall
-	
-		/*while (distanceSensor.getRangeInches()>inchesFromWall)
-		{
-			autoLowerLift();
-			myRobot.arcadeDrive(0.5, 0.0); 	// drive forwards half speed
-		}	 
-		myRobot.drive(0.0, 0.0); // stop robot */	
 	}
 
-	//during while loops if lift is not all the way down autoLowerLift lowers it
-    private void autoLowerLift()  {
-    	/*if (lowerLimit.get() {
-    		liftMotor.set(0.1);
-    	}	*/
-    }
-    //Hi hi hi
+	 
+    //Hi hi hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii 
     /**
      * This function is called once each time the robot enters tele-operated mode
      */
@@ -400,7 +310,14 @@ public class Robot extends IterativeRobot {
     //it clearlyyyyyy
     //doesn't tear you apart
     //anymorreeeeeeeeeeeee
-    //hi
+    //high
+    //high
+    //high
+    //low
+    //low
+    //low
+    //Hello form the outside
+    //I must have called a thousand times
     
    
   
