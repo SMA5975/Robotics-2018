@@ -109,20 +109,25 @@ public class Robot extends IterativeRobot {
      */
     
 	
-	public void autonomousPeriodic() {
-			moveLift(0.25);
-			if (moveCounter < 100)
-			{
-				myRobot.drive(0.5, 0.0);
-				moveCounter++;
-			}
-			else {
-				myRobot.drive(0.0, 0.0); 	// stop robot
-		}
-	}
+    public void autonomousPeriodic() {
+    	if (lowerFlag == false){
+    		moveLift(0.25);
+    	} else {
+
+    		System.out.println(moveCounter);
+    		if (moveCounter < 70)
+    		{
+    			myRobot.drive(0.75, 0.0);
+    			moveCounter++;
+    		}
+    		else {
+    			myRobot.drive(0.0, 0.0); 	// stop robot
+    		}
+    	}
+    }
 
 	 
-    //Hi hi hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii 
+    //Hi hi hi hi
     /**
      * This function is called once each time the robot enters tele-operated mode
      */
@@ -149,7 +154,7 @@ public class Robot extends IterativeRobot {
     	// instead of cube try quadratic scaling (joystick value * absolute value of joystick value)
     	
  
-    	myRobot.tankDrive(leftAxis, rightAxis);//myRobot.tankDrive(Axis 1, Axis 2)-you need to define the two axes, I'm not sure what the button mappings for the axes are on your controller
+    	myRobot.tankDrive(leftAxis, rightAxis);
     	
     	double liftAxis = getLiftAxis();
     	moveLift(liftAxis);
@@ -160,7 +165,6 @@ public class Robot extends IterativeRobot {
    //limits joystick axis to range -1.0 to 1.0
     private double limitAxis (double axis) {
     	
-    	//clean up joystick reading
     	if (axis > 1.0)
     	    axis = 1.0;
     	else if (axis < -1.0)
