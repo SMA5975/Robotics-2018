@@ -41,9 +41,11 @@ public class Robot extends IterativeRobot {
 	// maximum values adjustments need to be made
 	double inchesFromWall = 8.0;
 	
+	//global variables
 	int moveCounter;
-	
-	// Declaring XBox buttons
+	int moveLimit;
+	double driveLeft;
+	double driveRight;
 	
 	//digital inputs
 	double speedLimitFactor = 0.8;
@@ -72,6 +74,9 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousInit() {
     	moveCounter = 0;
+    	moveLimit = 0;
+    	driveLeft = 0.5;
+    	driveRight = 0.5;
     }
     
     /**
@@ -80,9 +85,9 @@ public class Robot extends IterativeRobot {
 	
     public void autonomousPeriodic() {
     	System.out.println(moveCounter);
-    	if (moveCounter < 70)
+    	if (moveCounter < moveLimit)
     	{
-    		myRobot.drive(0.5, 0.5);
+    		myRobot.drive(driveLeft, driveRight);
     		moveCounter++;
     	}
     	else {
