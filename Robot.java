@@ -119,6 +119,10 @@ public class Robot extends IterativeRobot {
     
     	myRobot.tankDrive(leftAxis, rightAxis);
         
+    	double myLAxis =  youManipulateMyHeart.getRawAxis(lTriggerID); 
+    	if (myLAxis > 0){
+    		System.out.println(distanceSensor.getRangeInches());
+    	}
     }
     
    //limits joystick axis to range -1.0 to 1.0
