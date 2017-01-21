@@ -46,6 +46,7 @@ public class Robot extends IterativeRobot {
 	int moveLimit;
 	double driveLeft;
 	double driveRight;
+	boolean ultraTrigger;
 	
 	//digital inputs
 	double speedLimitFactor = 0.8;
@@ -74,7 +75,7 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousInit() {
     	moveCounter = 0;
-    	moveLimit = 0;
+    	moveLimit = 213;
     	driveLeft = 0.5;
     	driveRight = 0.5;
     }
@@ -87,7 +88,7 @@ public class Robot extends IterativeRobot {
     	System.out.println(moveCounter);
     	if (moveCounter < moveLimit)
     	{
-    		myRobot.drive(driveLeft, driveRight);
+    		myRobot.tankDrive(driveLeft, driveRight);
     		moveCounter++;
     	}
     	else {
@@ -99,6 +100,7 @@ public class Robot extends IterativeRobot {
      * This function is called once each time the robot enters tele-operated mode
      */
     public void teleopInit(){
+    	ultraTrigger = false;
     }
 
     /**
@@ -119,9 +121,14 @@ public class Robot extends IterativeRobot {
     
     	myRobot.tankDrive(leftAxis, rightAxis);
         
-    	double myLAxis =  youManipulateMyHeart.getRawAxis(lTriggerID); 
-    	if (myLAxis > 0){
+    	double myLAxis =  youDriveMeCrazzy.getRawAxis(lTriggerID); 
+    		//System.out.println(myLAxis);
+    	if (myLAxis > 0 && ultraTrigger == false){
     		System.out.println(distanceSensor.getRangeInches());
+    		ultraTrigger = true;
+    	}
+    	if (myLAxis == 0){
+    		ultraTrigger = false;
     	}
     }
     
