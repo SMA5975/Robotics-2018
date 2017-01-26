@@ -9,12 +9,15 @@ import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.wpilibj.SensorBase;
+import edu.wpi.first.wpilibj.InterruptableSensorBase;
+import edu.wpi.first.wpilibj.DigitalSource;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Robot extends IterativeRobot {
 	RobotDrive myRobot;
-	VictorSP leftMotor ;
-	VictorSP rightMotor ;
+	VictorSP leftMotor;
+	VictorSP rightMotor;
 	Ultrasonic distanceSensor;
 	
 	// RoboRio mapping
@@ -61,6 +64,7 @@ public class Robot extends IterativeRobot {
     	myRobot =new RobotDrive(leftMotor,rightMotor);
     	leftMotor.setInverted(false);
     	distanceSensor = new Ultrasonic(pingSensorPin,echoSensorPin);
+    	distanceSensor.setAutomaticMode(true);
     	
     	youDriveMeCrazzy  = new Joystick(joyPort1);
     	youManipulateMyHeart = new Joystick(joyPort2);
