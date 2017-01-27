@@ -18,11 +18,13 @@ public class Robot extends IterativeRobot {
 	RobotDrive myRobot;
 	VictorSP leftMotor;
 	VictorSP rightMotor;
+	VictorSP liftMotor;
 	Ultrasonic distanceSensor;
 	
 	// RoboRio mapping
 	int leftMotorChannel=1;
 	int rightMotorChannel=2;
+	int liftMotorChannel=4;
 	
 	//IO pin mapping
 	int echoSensorPin=6;
@@ -61,6 +63,7 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
     	leftMotor=new VictorSP(leftMotorChannel);
     	rightMotor=new VictorSP(rightMotorChannel);
+    	liftMotor=new VictorSP(liftMotorChannel);
     	myRobot =new RobotDrive(leftMotor,rightMotor);
     	leftMotor.setInverted(false);
     	distanceSensor = new Ultrasonic(pingSensorPin,echoSensorPin);
@@ -134,6 +137,11 @@ public class Robot extends IterativeRobot {
     	if (myLAxis == 0){
     		ultraTrigger = false;
     	}
+     	
+    	//positive goes up, negative goes down
+    	double liftAxis = getLiftAxis();
+    	moveLift(liftAxis);
+    	
     }
     
    //limits joystick axis to range -1.0 to 1.0
@@ -149,6 +157,7 @@ public class Robot extends IterativeRobot {
     		
     }
     
+    //drive
     private double limitSpeed (double axis){
     	
     	axis = axis * axis * axis;
@@ -162,6 +171,22 @@ public class Robot extends IterativeRobot {
     	return axis;
     }
 
+    public double getLiftAxis()
+    {
+   	 // read trigger buttons and create the axis value
+    	 
+   	 double myLAxis =  youManipulateMyHeart.getRawAxis(lTriggerID); 
+   	 return limitAxis( myLAxis);
+    }
+    
+    public void moveLift(double liftAxis)
+    {
+   
+    	liftMotor.set(liftAxis);
+    	 
+    }
+
+    
     /**
      * This function is called periodically during test mode
      */
