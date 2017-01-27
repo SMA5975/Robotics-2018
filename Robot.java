@@ -52,6 +52,7 @@ public class Robot extends IterativeRobot {
 	double driveLeft;
 	double driveRight;
 	boolean ultraTrigger;
+	int rotationCounter;
 	
 	//digital inputs
 	double speedLimitFactor = 0.8;
@@ -108,6 +109,7 @@ public class Robot extends IterativeRobot {
      */
     public void teleopInit(){
     	ultraTrigger = false;
+    	rotationCounter = 0;
     }
 
     /**
@@ -139,8 +141,7 @@ public class Robot extends IterativeRobot {
     	}
      	
     	//positive goes up, negative goes down
-    	double liftAxis = getLiftAxis();
-    	moveLift(liftAxis);
+    	climbRope ();
     	
     }
     
@@ -179,11 +180,35 @@ public class Robot extends IterativeRobot {
    	 return limitAxis( myLAxis);
     }
     
-    public void moveLift(double liftAxis)
+    public void climbRope()
     {
    
-    	liftMotor.set(liftAxis);
+    	liftMotor.set(27);
+    	longClimb ();
+    	shortClimb ();
     	 
+    }
+    
+    //when right trigger pulled the motor has a set rotation allowed, 
+    //no matter how many times the trigger is pulled and let go of
+    public void longClimb() 
+    {
+    	double myRAxis =  youManipulateMyHeart.getRawAxis(lTriggerID);
+    	if (myRAxis > 0) {
+    		if (rotationCounter < 1) {
+    			liftMotor.set(.85);
+    			rotationCounter++;
+    		}
+    	}
+    }
+    
+    //when left trigger pulled the motor rotates set amount
+    public void shortClimb () 
+    {
+    	double myLAxis =  youManipulateMyHeart.getRawAxis(lTriggerID); 
+    	if (myLAxis > 0) {
+    		liftMotor.set(.27);
+    	}
     }
 
     
