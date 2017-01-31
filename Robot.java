@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.SensorBase;
 import edu.wpi.first.wpilibj.InterruptableSensorBase;
 import edu.wpi.first.wpilibj.DigitalSource;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 
 public class Robot extends IterativeRobot {
 	RobotDrive myRobot;
@@ -20,6 +21,8 @@ public class Robot extends IterativeRobot {
 	VictorSP rightMotor;
 	VictorSP liftMotor;
 	Ultrasonic distanceSensor;
+	DigitalInput weCanGoTheDistance;
+	DigitalOutput weWentTheDistance;
 	
 	// RoboRio mapping
 	int leftMotorChannel=1;
@@ -62,13 +65,20 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-    	leftMotor=new VictorSP(leftMotorChannel);
-    	rightMotor=new VictorSP(rightMotorChannel);
-    	liftMotor=new VictorSP(liftMotorChannel);
-    	myRobot =new RobotDrive(leftMotor,rightMotor);
+    	leftMotor = new VictorSP(leftMotorChannel);
+    	rightMotor = new VictorSP(rightMotorChannel);
+    	liftMotor = new VictorSP(liftMotorChannel);
+    	myRobot = new RobotDrive(leftMotor,rightMotor);
     	leftMotor.setInverted(false);
-    	distanceSensor = new Ultrasonic(pingSensorPin,echoSensorPin);
+    	weCanGoTheDistance = new DigitalInput(9);
+    	weWentTheDistance = new DigitalOutput(9);
+    	distanceSensor = new Ultrasonic(weWentTheDistance, weCanGoTheDistance);
     	distanceSensor.setAutomaticMode(true);
+    	if (distanceSensor.isEnabled()) {
+    		System.out.println("Distance sensor is enabled");
+    	} else {
+    		System.out.println("Distance sensor is not enabled");
+    	}
     	
     	youDriveMeCrazzy  = new Joystick(joyPort1);
     	youManipulateMyHeart = new Joystick(joyPort2);
