@@ -70,7 +70,7 @@ public class Robot extends IterativeRobot {
     	liftMotor = new VictorSP(liftMotorChannel);
     	myRobot = new RobotDrive(leftMotor,rightMotor);
     	leftMotor.setInverted(false);
-    	weCanGoTheDistance = new DigitalInput(9);
+    	/*weCanGoTheDistance = new DigitalInput(9);
     	weWentTheDistance = new DigitalOutput(9);
     	distanceSensor = new Ultrasonic(weWentTheDistance, weCanGoTheDistance);
     	distanceSensor.setAutomaticMode(true);
@@ -79,13 +79,13 @@ public class Robot extends IterativeRobot {
     	} else {
     		System.out.println("Distance sensor is not enabled");
     	}
-    	
+    	*/
     	youDriveMeCrazzy  = new Joystick(joyPort1);
     	youManipulateMyHeart = new Joystick(joyPort2);
     	
         //test mode
-    	LiveWindow.addSensor("driveSystem", "distanceSensor", distanceSensor);
-    	SmartDashboard.putNumber("DistanceSensor", distanceSensor.getRangeInches());
+    	//LiveWindow.addSensor("driveSystem", "distanceSensor", distanceSensor);
+    	//SmartDashboard.putNumber("DistanceSensor", distanceSensor.getRangeInches());
     }
     
     /**
