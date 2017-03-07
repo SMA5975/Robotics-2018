@@ -43,10 +43,11 @@ public class Robot extends IterativeRobot {
 	int leftStickID = 1;
 	int rightStickID = 5;
 	int antiTurboButtonID = 6;
-	int ifThisIsTooFastForYouPushThisButtonID = 7;
+	int ifThisIsTooFastForYouPushThisButtonID = 5;
 	Joystick youDriveMeCrazzy;
 	Joystick youManipulateMyHeart;
 	//verify that stick1 and stick2 correspond to the left and right joysticks on the controller
+	//6 is right, 5 is left
 	 
 	// maximum values adjustments need to be made
 	double inchesFromWall = 8.0;
@@ -60,8 +61,9 @@ public class Robot extends IterativeRobot {
 	int rotationCounter;
 	
 	//digital inputs
-	double speedLimit = 0.8;
-	double extremeSpeedLimit = 0.5;
+	double speedLimit = 0.7;
+	double extremeSpeedLimit = 0.4;
+	double normalMode = 0.9;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -74,7 +76,8 @@ public class Robot extends IterativeRobot {
     	liftMotor = new VictorSP(liftMotorChannel);
     	myRobot = new RobotDrive(leftMotor,rightMotor);
     	leftMotor.setInverted(false);
-    	weCanGoTheDistance = 3;
+    	/*
+    			weCanGoTheDistance = 3;
     	weWentTheDistance = 4;
     	distanceSensor = new Ultrasonic(weWentTheDistance, weCanGoTheDistance);
     	distanceSensor.setAutomaticMode(true);
@@ -83,6 +86,7 @@ public class Robot extends IterativeRobot {
     	} else {
     		System.out.println("Distance sensor is not enabled");
     	}
+    	*/
     	
     	youDriveMeCrazzy  = new Joystick(joyPort1);
     	youManipulateMyHeart = new Joystick(joyPort2);
@@ -184,15 +188,15 @@ public class Robot extends IterativeRobot {
     	if(youDriveMeCrazzy.getRawButton(antiTurboButtonID) == true){
     		axis = axis * extremeSpeedLimit;
     		System.out.println("Extremely Slow mode");
-    	} 
+    	} //this is the right button
     	
     	else if(youDriveMeCrazzy.getRawButton(ifThisIsTooFastForYouPushThisButtonID) == true){
     		axis = axis * speedLimit;
     		System.out.println("ifThisIsTooFastForYouPushThisButton mode");
+    	} //this is the left button
+    	 else {
+    		 axis = axis * normalMode;
     	}
-    	// else {
-    	//	System.out.println("Regular mode");
-        //	}
     	
     	
     	return axis;
