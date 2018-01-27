@@ -27,8 +27,8 @@ public class Robot extends IterativeRobot {
 	//Driver Controls
 	int leftStickID = 1;
 	int rightStickID = 5;
-	int antiTurboButtonID = 6;
-	int ifThisIsTooFastForYouPushThisButtonID = 5;
+	int halfSpeedButtonID = 6;
+	int eightyPercentSpeedButtonID = 5;
 	Joystick youDriveMeCrazzy;
 	Joystick youManipulateMyHeart;
 	
@@ -183,12 +183,12 @@ public class Robot extends IterativeRobot {
     	
     	axis = axis * axis * axis;
     	
-    	if(youDriveMeCrazzy.getRawButton(antiTurboButtonID) == true){
+    	if(youDriveMeCrazzy.getRawButton(halfSpeedButtonID) == true){
     		axis = axis * extremeSpeedLimit;
     		System.out.println("Extremely Slow mode");
     	} //this is the right button
     	
-    	else if(youDriveMeCrazzy.getRawButton(ifThisIsTooFastForYouPushThisButtonID) == true){
+    	else if(youDriveMeCrazzy.getRawButton(eightyPercentSpeedButtonID) == true){
     		axis = axis * speedLimit;
     		System.out.println("ifThisIsTooFastForYouPushThisButton mode");
     	} //this is the left button
