@@ -24,15 +24,15 @@ public class Robot extends IterativeRobot {
 	
 	// Driver Station / controller mapping
 	int joyPort1=0; //driver xbox controller
-	int joyPort2=1; //lift xbox controller
+	int joyPort2=1; //manipulator xbox controller
 	
 	//Driver Controls
-	int leftStickID = 1;
 	int lTriggerID = 2;
 	int rTriggerID = 3;
-	int rightStickID = 5;
-	int halfSpeedButtonID = 6;
-	int speedyMcSpeedFaceID = 5;
+	int leftStickID = 1;
+	int rightStickID = 5; //this one shouldn't work
+	int halfSpeedButtonID = 5; //half-speed button
+	int speedyMcSpeedFaceID = 6; //turbo button
 	Joystick youDriveMeCrazzy;
 	Joystick youManipulateMyHeart;
 	
@@ -66,9 +66,12 @@ public class Robot extends IterativeRobot {
 	
 	
 	//digital inputs
-	double speedLimit = 0.9;
-	double extremeSpeedLimit = 0.5;
+	double turboSpeedLimit = 0.9;
+	double halfSpeedLimit = 0.5;
 	double normalMode = 0.7;
+	double normalLiftSpeed = 0.50;
+	double turboLiftSpeed = 0.75;
+	double safetyDownSpeed = 0.25;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -183,8 +186,6 @@ public class Robot extends IterativeRobot {
 
     {
 
-    	
-
     	double myRAxis =  youManipulateMyHeart.getRawAxis(rTriggerID); 
 
     	if (myRAxis != 0) {
@@ -204,12 +205,12 @@ public class Robot extends IterativeRobot {
     	axis = axis * axis * axis;
     	
     	if(youDriveMeCrazzy.getRawButton(halfSpeedButtonID) == true){
-    		axis = axis * extremeSpeedLimit;
+    		axis = axis * halfSpeedLimit;
     		System.out.println("Extremely Slow mode");
     	} //this is the right button
     	
     	else if(youDriveMeCrazzy.getRawButton(speedyMcSpeedFaceID) == true){
-    		axis = axis * speedLimit;
+    		axis = axis * turboSpeedLimit;
     		System.out.println("Turbo mode");
     	} //this is the left button
     	 else {
