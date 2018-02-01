@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 public class Robot extends IterativeRobot {
 	RobotDrive myRobot;
+	VictorSP liftMotor;
 	VictorSP leftMotor;
 	VictorSP rightMotor;
 	
@@ -17,6 +18,7 @@ public class Robot extends IterativeRobot {
 	// RoboRio mapping
 	int leftMotorChannel=1;
 	int rightMotorChannel=2;
+	int liftMotorChannel=3;
 	DriverStation ds = DriverStation.getInstance();
 
 	
@@ -26,9 +28,11 @@ public class Robot extends IterativeRobot {
 	
 	//Driver Controls
 	int leftStickID = 1;
+	int lTriggerID = 2;
+	int rTriggerID = 3;
 	int rightStickID = 5;
 	int halfSpeedButtonID = 6;
-	int eightyPercentSpeedButtonID = 5;
+	int speedyMcSpeedFaceID = 5;
 	Joystick youDriveMeCrazzy;
 	Joystick youManipulateMyHeart;
 	
@@ -47,7 +51,6 @@ public class Robot extends IterativeRobot {
 	//verify that stick1 and stick2 correspond to the left and right joysticks on the controller
 	//6 is right, 5 is left
 	 
-	
 	//global variables
 	int moveCounter;
 	int moveLimit;
@@ -63,14 +66,15 @@ public class Robot extends IterativeRobot {
 	
 	
 	//digital inputs
-	double speedLimit = 0.8;
+	double speedLimit = 0.9;
 	double extremeSpeedLimit = 0.5;
-	double normalMode = 0.75;
+	double normalMode = 0.7;
 
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
+	
     public void robotInit() {
     	
     	leftMotor = new VictorSP(leftMotorChannel);
@@ -79,8 +83,6 @@ public class Robot extends IterativeRobot {
     	myRobot = new RobotDrive(leftMotor,rightMotor);
     	leftMotor.setInverted(false);
    
-    	
-    	
     	youDriveMeCrazzy  = new Joystick(joyPort1);
     	youManipulateMyHeart = new Joystick(joyPort2);
     }
@@ -90,6 +92,7 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousInit() {
     	moveCounter = 0;
+    	
     	moveLimit = 270;
    
     	driveLeft = 0.9;
@@ -97,7 +100,7 @@ public class Robot extends IterativeRobot {
     	driveRight = 0.9;
     	
     	String gameData;
-		gameData = DriverStation.getInstance().getGameSpecificMessage();
+			gameData = DriverStation.getInstance().getGameSpecificMessage();
 		if(gameData.charAt(0) == 'L')//switch closest to our robot, determining whether our team color is on the left or right
 		{
 			closeSwitchPiece = false;//Left
@@ -117,8 +120,7 @@ public class Robot extends IterativeRobot {
 			farSwitchPiece = true;//Right
 		}
     }
-   
-    //test
+  
     /**
      * This function is called periodically during autonomous
      */
@@ -145,6 +147,7 @@ public class Robot extends IterativeRobot {
     	
     public void teleopInit(){
     	rotationCounter = 0;
+    	liftMotor = new VictorSP(liftMotorChannel);
     }
 
     /**
@@ -173,10 +176,27 @@ public class Robot extends IterativeRobot {
     	else if (axis < -1.0)
     		axis = -1.0;
      
-    	
     	return axis;
-    		
     }
+    
+    public void shortClimb () 
+
+    {
+
+    	
+
+    	double myRAxis =  youManipulateMyHeart.getRawAxis(rTriggerID); 
+
+    	if (myRAxis != 0) {
+
+    		liftMotor.set(-limitAxis(myRAxis));
+
+    		  } else {
+
+    		  liftMotor.set(-limitAxis(0.0));
+
+    		  }
+    	}
     
     //drive
     private double limitSpeed (double axis){
@@ -188,14 +208,13 @@ public class Robot extends IterativeRobot {
     		System.out.println("Extremely Slow mode");
     	} //this is the right button
     	
-    	else if(youDriveMeCrazzy.getRawButton(eightyPercentSpeedButtonID) == true){
+    	else if(youDriveMeCrazzy.getRawButton(speedyMcSpeedFaceID) == true){
     		axis = axis * speedLimit;
-    		System.out.println("ifThisIsTooFastForYouPushThisButton mode");
+    		System.out.println("Turbo mode");
     	} //this is the left button
     	 else {
     		 axis = axis * normalMode;
     	}
-    	
     	
     	return axis;
     }
