@@ -1,0 +1,49 @@
+ /* I stole this from 2016 code when we lowered the lift with limit switches. 
+     Can we do something with it to raise the lift during auto? Also need move counter as we cannot depend on the limit switches -Isabelle
+      
+      public void moveLift(double liftAxis) {
+     	 final int stopMotor = 0;
+     	 
+     	 // Read the limit switches before moving the lift!
+     	 //readSwitch(upperLimit, upperBtnState, lastUpperBtnState, lastUpperDebounceTime);
+     	 //readSwitch(lowerLimit, lowerBtnState, lastLowerBtnState, lastLowerDebounceTime);
+     	 	
+ 		upperBtnState = upperLimit.get();
+     	lowerBtnState = lowerLimit.get();
+
+     	 if(liftAxis < 0 && upperBtnState == false) {
+
+     		 liftMotor.set(stopMotor);
+     		 lowerFlag = true;
+     		 System.out.println("Hit lower limit");
+     	 }
+     	 
+     	 else if(liftAxis > 0 && lowerBtnState == false)
+     	 
+     	 {
+     		 liftMotor.set(stopMotor);
+     		 upperFlag = true;
+     		 System.out.println("Hit upper limit");
+     	 }
+
+     	 else if (lowerBtnState == false && upperBtnState == false)
+
+     	 {
+     		// Both limit switches can't be on at the same time!
+     		// Since this should never happen, stop the motor!
+
+     		 liftMotor.set(stopMotor);
+     		 
+     	 } else {
+     	 
+     		 liftMotor.set(liftAxis);
+     		 if (lowerFlag == true && liftAxis > 0) {
+     			 lowerFlag = false;
+     		 } else if (upperFlag == true && liftAxis < 0){
+
+     			 upperFlag = false;
+     		 }
+     	 }
+     }
+     
+    */
